@@ -18,11 +18,11 @@ function getFile(fPath) {
 function calculateArbitrage(amountIn, amountOut, surfaceObj) {
 
     // Calculate Profit or Loss
-    let threshold = 1.5;
+    let threshold = 0;
     let resultArray = [surfaceObj];
     let profitLossPerc = 0;
     let profitLoss = amountOut - amountIn;
-    if (profitLoss > threshold) {
+    if (profitLoss < threshold) {
         profitLossPerc = (profitLoss / amountIn) * 100;
 
         // Provide Output Result
@@ -145,13 +145,13 @@ async function getDepth(amountIn) {
         let acquiredCoinT1 = await getPrice(pair1ContractAddress, amountIn, trade1Direction);
         
         // Trade 2
-        // console.log('Checking trade 2 acquired coin...');
+        console.log('Checking trade 2 acquired coin...');
         if (acquiredCoinT1 == 0) {return}
             let acquiredCoinT2 = await getPrice(pair2ContractAddress, acquiredCoinT1, trade2Direction);
 
 
         // Trade 3
-        // console.log('Checking trade 3 acquired coin...');
+        console.log('Checking trade 3 acquired coin...');
         if (acquiredCoinT2 == 0) {return}
         let acquiredCoinT3 = await getPrice(pair3ContractAddress, acquiredCoinT2, trade3Direction);
 
@@ -163,26 +163,20 @@ async function getDepth(amountIn) {
     return
 }
 
-// Watch the triArb directory
-var runOnce = (function() {
-    var executed = false;
-    return function() {
-        if (!executed) {
-            executed = true;
-            // do something
-            getDepth(amountIn=100);
-        }
-    };
-})();
-
-console.log("Running the depth function... ", runOnce());
+// Watch the py directory
 /*
-fs.watch("../triArb", { persistent: true }, function (event, fileName) {
+async function launchOppFinder() {
+    await getDepth(amountIn=100);
+};
+*/
+
+fs.watch("C:\\Users\\senat\\Web\\node\\flashloans\\TriArbFlash\\py", { persistent: true }, function (event, fileName) {
     console.log("Event: " + event);
     console.log(fileName + "\n");
-    console.log(runOnce());
-  });
-*/
+    getDepth(amountIn=100);
+    // launchOppFinder();
+});
+
 
 // Configure the amount in
 // getDepth(amountIn=100);
