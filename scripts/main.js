@@ -164,18 +164,19 @@ async function getDepth(amountIn) {
 }
 
 // Watch the py directory
-/*
+
 async function launchOppFinder() {
     await getDepth(amountIn=100);
 };
-*/
 
-fs.watch("C:\\Users\\senat\\Web\\node\\flashloans\\TriArbFlash\\py", { persistent: true }, function (event, fileName) {
+
+fs.watch("py", { persistent: true }, function (event, fileName) {
     console.log("Event: " + event);
     console.log(fileName + "\n");
-    getDepth(amountIn=100);
-    // launchOppFinder();
+    // getDepth(amountIn=100);
+    launchOppFinder();
 });
+
 
 
 // Configure the amount in
