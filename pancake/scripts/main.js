@@ -18,11 +18,11 @@ function getFile(fPath) {
 function calculateArbitrage(amountIn, amountOut, surfaceObj) {
 
     // Calculate Profit or Loss
-    let threshold = 0;
+    let threshold = 1.5;
     let resultArray = [surfaceObj];
     let profitLossPerc = 0;
     let profitLoss = amountOut - amountIn;
-    if (profitLoss < threshold) {
+    if (profitLoss > threshold) {
         profitLossPerc = (profitLoss / amountIn) * 100;
 
         // Provide Output Result
@@ -142,6 +142,9 @@ async function getDepth(amountIn) {
 
         // Trade 1
         console.log('Checking trade acquired coins...');
+        console.log("Here are you swaps. ", fileJsonArrayLimit[i].swap1);
+        console.log("Here are you swaps. ", fileJsonArrayLimit[i].swap2);
+        console.log("Here are you swaps. ", fileJsonArrayLimit[i].swap3);
         let acquiredCoinT1 = await getPrice(pair1ContractAddress, amountIn, trade1Direction);
         
         // Trade 2
@@ -173,11 +176,5 @@ async function launchOppFinder() {
 fs.watch("py", { persistent: true }, function (event, fileName) {
     console.log("Event: " + event);
     console.log(fileName + "\n");
-    // getDepth(amountIn=100);
     launchOppFinder();
 });
-
-
-
-// Configure the amount in
-// getDepth(amountIn=100);
