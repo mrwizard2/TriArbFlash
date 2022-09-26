@@ -173,7 +173,7 @@ async function launchOppFinder() {
 };
 
 
-fs.watch("py", { persistent: true }, function (event, fileName) {
+fs.watch("../py", { persistent: true }, function (event, fileName) {
     console.log("Event: " + event);
     console.log(fileName + "\n");
     launchOppFinder();
