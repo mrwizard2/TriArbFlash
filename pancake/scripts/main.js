@@ -124,7 +124,7 @@ async function getPrice(factory, amtIn, tradeDirection) {
 async function getDepth(amountIn) {
     // Get JSON Surface Rates
     console.log('Reading surface rate information...')
-    let fileInfo = getFile('../triArb/uniswap_surface_rates.json');
+    let fileInfo = getFile('../py/uniswap_surface_rates.json');
     fileJsonArray = JSON.parse(fileInfo);
     let limit = fileJsonArray.length;
     console.log('There are ' + limit + ' potential triangles available!');
@@ -173,7 +173,7 @@ async function launchOppFinder() {
 };
 
 
-fs.watch("../py", { persistent: true }, function (event, fileName) {
+fs.watch("py", { persistent: true }, function (event, fileName) {
     console.log("Event: " + event);
     console.log(fileName + "\n");
     launchOppFinder();
