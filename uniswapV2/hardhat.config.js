@@ -28,19 +28,22 @@ module.exports = {
   networks: {
     hardhat: {
       forking: {
-        url: "https://bsc-dataseed.binance.org/",
+        url: "https://eth-mainnet.g.alchemy.com/v2/oR2RI3ISaPeRDfEm4IB-f5ios943aPoy",
       },
     },
     testnet: {
-      url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-      chainId: 97,
+      url: "https://eth-goerli.g.alchemy.com/v2/vlCfVvznhIMuoE2tpkg9AxxXOFFYiNQj",
+      chainId: 5,
       accounts: [
         customEnv.privateKey,
       ],
     },
     mainnet: {
-      url: "https://bsc-dataseed.binance.org/",
-      chainId: 56,
+      url: "https://eth-mainnet.g.alchemy.com/v2/oR2RI3ISaPeRDfEm4IB-f5ios943aPoy",
+      chainId: 1,
+      accounts: [
+        customEnv.hardhatKey,
+      ],
     },
   },
 };

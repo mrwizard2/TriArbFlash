@@ -11,14 +11,13 @@ const provider = ethers.provider;
 describe("FlashSwap Contract", () => {
   let FLASHSWAP, BORROW_AMOUNT, FUND_AMOUNT, initialFundingHuman, txArbitrage;
 
-  const DECIMALS = 18;
+  const DECIMALS = 6;
 
-  const BUSD_WHALE = "0xf977814e90da44bfa03b6295a0616a897441acec";
-  const BUSD = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56";
-  const CAKE = "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82";
-  const CROX = "0x2c094F5A7D1146BB93850f629501eB749f6Ed491";
+  const USDC_WHALE = "0xcffad3200574698b78f32232aa9d63eabd290703";
+  const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+  const LINK = "0x514910771AF9Ca656af840dff83E8264EcF986CA";
 
-  const BASE_TOKEN_ADDRESS = BUSD;
+  const BASE_TOKEN_ADDRESS = USDC;
 
   const tokenBase = new ethers.Contract(BASE_TOKEN_ADDRESS, abi, provider);
 
@@ -27,11 +26,11 @@ describe("FlashSwap Contract", () => {
     [owner] = await ethers.getSigners();
 
     // Ensure that the WHALE has a balance
-    const whale_balance = await provider.getBalance(BUSD_WHALE);
+    const whale_balance = await provider.getBalance(USDC_WHALE);
     expect(whale_balance).not.equal("0");
 
     // Deploy smart contract
-    const FlashSwap = await ethers.getContractFactory("PancakeFlashSwap");
+    const FlashSwap = await ethers.getContractFactory("UniswapCrossFlash");
     FLASHSWAP = await FlashSwap.deploy();
     await FLASHSWAP.deployed();
 
@@ -46,9 +45,10 @@ describe("FlashSwap Contract", () => {
     // Fund our Contract - FOR TESTING ONLY
     await impersonateFundErc20(
       tokenBase,
-      BUSD_WHALE,
+      USDC_WHALE,
       FLASHSWAP.address,
-      initialFundingHuman
+      initialFundingHuman,
+      DECIMALS
     );
   });
 
@@ -75,23 +75,29 @@ describe("FlashSwap Contract", () => {
       assert(txArbitrage);
 
       // Print balances
-      const contractBalanceBUSD = await FLASHSWAP.getBalanceOfToken(BUSD);
-      const formattedBalBUSD = Number(
-        ethers.utils.formatUnits(contractBalanceBUSD, DECIMALS)
+      const contractBalanceUSDC = await FLASHSWAP.getBalanceOfToken(USDC);
+      const formattedBalUSDC = Number(
+        ethers.utils.formatUnits(contractBalanceUSDC, DECIMALS)
       );
-      console.log("Balance of BUSD: " + formattedBalBUSD);
+      console.log("Balance of USDC: " + formattedBalUSDC);
 
-      const contractBalanceCROX = await FLASHSWAP.getBalanceOfToken(CROX);
-      const formattedBalCROX = Number(
-        ethers.utils.formatUnits(contractBalanceCROX, DECIMALS)
+      const contractBalanceLINK = await FLASHSWAP.getBalanceOfToken(LINK);
+      const formattedBalLINK = Number(
+        ethers.utils.formatUnits(contractBalanceLINK, DECIMALS)
       );
-      console.log("Balance of CROX: " + formattedBalCROX);
+      console.log("Balance of LINK: " + formattedBalLINK);
+    });
 
-      const contractBalanceCAKE = await FLASHSWAP.getBalanceOfToken(CAKE);
-      const formattedBalCAKE = Number(
-        ethers.utils.formatUnits(contractBalanceCAKE, DECIMALS)
+    it("Provides GAS output", async () => {
+      const txReceipt = await provider.getTransactionReceipt(txArbitrage.hash);
+      const effGasPrice = txReceipt.effectiveGasPrice;
+      const txGasUsed = txReceipt.gasUsed;
+      const gasUsedETH = effGasPrice * txGasUsed;
+      console.log(
+        "Total Gas USD: " +
+        ethers.utils.formatEther(gasUsedETH.toString()) * 608 // exchange rate today 
       );
-      console.log("Balance of CAKE: " + formattedBalCAKE);
+      expect(gasUsedETH).not.equal(0);
     });
   });
 });
